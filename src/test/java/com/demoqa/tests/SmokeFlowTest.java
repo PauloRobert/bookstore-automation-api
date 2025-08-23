@@ -35,37 +35,35 @@ public class SmokeFlowTest {
 
         // Gerar token
         String token = userService.generateToken(userCredentials);
+        System.out.println("Token gerado: " + token.substring(0, Math.min(20, token.length())) + "...");
         assertNotNull(token);
 
         // Verificar se está autorizado
         assertTrue(userService.isAuthorized(userCredentials));
 
-        // Listar livros disponíveis
+        // Listar livros disponíveis - COM DEBUG
+        System.out.println("Tentando listar livros...");
         Response listResp = bookService.listBooks();
-
-        // Se API estiver instável, tento novamente
-        if (listResp.statusCode() != 200) {
-            System.out.println("Tentativa 1 falhou com status: " + listResp.statusCode());
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            listResp = bookService.listBooks();
-        }
+        System.out.println("Status da resposta: " + listResp.statusCode());
 
         if (listResp.statusCode() != 200) {
-            System.out.println("API de livros indisponível, pulando teste de livros");
-            return; // Sai do teste se API não responder
+            System.out.println("Corpo da resposta de erro: " + listResp.asString());
+            fail("API de livros retornou erro " + listResp.statusCode() + ": " + listResp.asString());
         }
 
         List<String> isbns = listResp.jsonPath().getList("books.isbn");
         assertTrue(isbns.size() >= 2, "Precisa ter pelo menos 2 livros");
 
         List<String> escolhidos = Arrays.asList(isbns.get(0), isbns.get(1));
+        System.out.println("Livros escolhidos: " + escolhidos);
 
         // Adicionar livros ao usuário
         Response addResp = bookService.addBooksToUser(userId, escolhidos, token);
+        System.out.println("Status adicionar livros: " + addResp.statusCode());
+
+        if (addResp.statusCode() != 201) {
+            System.out.println("Erro ao adicionar livros: " + addResp.asString());
+        }
         assertEquals(201, addResp.statusCode());
 
         // Verificar se os livros foram adicionados
