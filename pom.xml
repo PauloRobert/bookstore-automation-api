@@ -17,7 +17,7 @@
         <maven.compiler.release>17</maven.compiler.release>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <junit.version>5.9.0</junit.version>
+        <junit.version>5.9.2</junit.version>
         <restassured.version>5.5.6</restassured.version>
         <jackson.version>2.19.2</jackson.version>
         <faker.version>1.0.2</faker.version>
@@ -64,6 +64,15 @@
         </dependencies>
     <build>
     <plugins>
+        <!-- Maven Compiler Plugin -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.11.0</version>
+            <configuration>
+                <release>17</release>
+            </configuration>
+        </plugin>
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
