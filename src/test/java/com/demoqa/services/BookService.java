@@ -14,7 +14,7 @@ public class BookService {
 
     public Response listBooks() {
         return RestAssured.given()
-                .get("/BookStore/v1/Books"); // :contentReference[oaicite:9]{index=9}
+                .get("/BookStore/v1/Book"); // :contentReference[oaicite:9]{index=9}
     }
 
     public Response addBooksToUser(String userId, List<String> isbns, String bearerToken) {
@@ -32,6 +32,6 @@ public class BookService {
                 .header("Authorization", "Bearer " + bearerToken)
                 .contentType("application/json")
                 .body(body)
-                .post("/BookStore/v1/Books"); // :contentReference[oaicite:10]{index=10}
+                .post("/BookStore/v1/Book"); // :contentReference[oaicite:10]{index=10}
     }
 }
