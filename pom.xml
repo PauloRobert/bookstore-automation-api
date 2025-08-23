@@ -17,14 +17,14 @@
         <maven.compiler.release>17</maven.compiler.release>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <junit.version>5.13.4</junit.version>
+        <junit.version>5.9.0</junit.version>
         <restassured.version>5.5.6</restassured.version>
         <jackson.version>2.19.2</jackson.version>
         <faker.version>1.0.2</faker.version>
         <surefire.version>3.5.3</surefire.version>
     </properties>
 
-    <dependencyManagement>
+
         <dependencies>
             <!-- JUnit 5 -->
             <dependency>
@@ -62,8 +62,6 @@
                 <version>${faker.version}</version>
             </dependency>
         </dependencies>
-    </dependencyManagement>
-
     <build>
     <plugins>
         <plugin>
