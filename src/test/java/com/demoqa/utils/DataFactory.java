@@ -20,4 +20,23 @@ public class DataFactory {
         return "Aa1!" + faker.internet().password(8, 12, true, true)
                 .replaceAll("\\s", "");
     }
+
+    /**
+     * Gera um username mais simples para casos específicos
+     */
+    public static String simpleUsername() {
+        return "user" + ThreadLocalRandom.current().nextInt(10000, 99999);
+    }
+
+    /**
+     * Gera uma senha com padrão específico para testes
+     */
+    public static String strongPassword() {
+        String letters = faker.lorem().characters(4, 6, false);
+        String numbers = String.valueOf(ThreadLocalRandom.current().nextInt(100, 999));
+        String symbols = "!@#$";
+        char symbol = symbols.charAt(ThreadLocalRandom.current().nextInt(symbols.length()));
+
+        return "Test" + letters + numbers + symbol;
+    }
 }
