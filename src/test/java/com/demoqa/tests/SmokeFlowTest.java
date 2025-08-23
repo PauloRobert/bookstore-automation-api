@@ -26,6 +26,7 @@ public class SmokeFlowTest {
 
         // 1) Criar usuário
         String userId = userService.createUser(creds);
+        System.out.println("USer criado: " + userId);
         assertNotNull(userId, "userId não deve ser nulo");
 
         // 2) Gerar token
