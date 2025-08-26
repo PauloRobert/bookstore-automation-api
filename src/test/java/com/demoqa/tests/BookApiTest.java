@@ -12,31 +12,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.demoqa.TestSuite;
 
 @DisplayName("Book API Tests - Testes específicos da API de livros")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class BookApiTest {
 
-    private static ExtentReports extent;
-    private ExtentTest test;
-
     private BookService bookService;
     private UserService userService;
-
-    @BeforeAll
-    static void setupReport() {
-        ExtentSparkReporter spark = new ExtentSparkReporter("target/extent-report.html");
-        extent = new ExtentReports();
-        extent.attachReporter(spark);
-    }
-
-    @AfterAll
-    static void tearDownReport() {
-        extent.flush();
-    }
+    private ExtentTest test;
 
     @BeforeEach
     void setUp() {
@@ -44,10 +29,18 @@ public class BookApiTest {
         userService = new UserService();
     }
 
+    @AfterAll
+    static void tearDown() {
+        TestSuite.flushReport();
+    }
+
     @Test
     @Order(1)
     void deveListarLivrosDisponiveisComSucesso() {
-        test = extent.createTest("Listar livros disponíveis", "Verifica se a listagem de livros retorna corretamente");
+        test = TestSuite.extent.createTest(
+                "Listar livros disponíveis",
+                "Verifica se a listagem de livros retorna corretamente"
+        );
 
         Response response = bookService.listBooks();
         assertEquals(200, response.statusCode(), "Listagem deve retornar status 200");
@@ -71,7 +64,10 @@ public class BookApiTest {
     @Test
     @Order(2)
     void deveAdicionarLivroAoUsuarioAutorizado() {
-        test = extent.createTest("Adicionar livro ao usuário autorizado", "Valida a adição de um livro a um usuário existente");
+        test = TestSuite.extent.createTest(
+                "Adicionar livro ao usuário autorizado",
+                "Valida a adição de um livro a um usuário existente"
+        );
 
         UserCredentials credentials = new UserCredentials(DataFactory.username(), DataFactory.password());
         String userId = userService.createUser(credentials);
@@ -97,7 +93,10 @@ public class BookApiTest {
     @Test
     @Order(3)
     void deveAdicionarMultiplosLivrosAoUsuario() {
-        test = extent.createTest("Adicionar múltiplos livros ao usuário", "Valida a adição de múltiplos livros ao usuário");
+        test = TestSuite.extent.createTest(
+                "Adicionar múltiplos livros ao usuário",
+                "Valida a adição de múltiplos livros ao usuário"
+        );
 
         UserCredentials credentials = new UserCredentials(DataFactory.username(), DataFactory.password());
         String userId = userService.createUser(credentials);
@@ -124,7 +123,10 @@ public class BookApiTest {
     @Test
     @Order(4)
     void naoDeveAdicionarLivrosComTokenInvalido() {
-        test = extent.createTest("Não deve adicionar livros com token inválido", "Valida que adição com token inválido falha");
+        test = TestSuite.extent.createTest(
+                "Não deve adicionar livros com token inválido",
+                "Valida que adição com token inválido falha"
+        );
 
         UserCredentials credentials = new UserCredentials(DataFactory.username(), DataFactory.password());
         String userId = userService.createUser(credentials);
