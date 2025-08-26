@@ -3,9 +3,9 @@ name: CI - Bookstore API (Java + ExtentReports)
 # Gatilhos
 on:
   push:
-    branches: [ master ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, develop ]
   schedule:
     - cron: "0 * * * *" # Executa de hora em hora
 
