@@ -4,6 +4,7 @@ import com.demoqa.models.UserCredentials;
 import com.demoqa.services.BookService;
 import com.demoqa.services.UserService;
 import com.demoqa.utils.DataFactory;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Epic("Bookstore API")
+@Feature("Book Management")
+@Owner("Stark")
 @DisplayName("Book API Tests - Testes específicos da API de livros")
 public class BookApiTest {
 
@@ -27,6 +31,8 @@ public class BookApiTest {
     }
 
     @Test
+    @Story("Listar livros")
+    @Severity(SeverityLevel.NORMAL)
     @DisplayName("Deve listar livros disponíveis com sucesso")
     void deveListarLivrosDisponiveisComSucesso() {
         Response response = bookService.listBooks();
@@ -37,7 +43,6 @@ public class BookApiTest {
         assertNotNull(books, "Lista de livros não deve ser nula");
         assertFalse(books.isEmpty(), "Deve existir pelo menos um livro");
 
-        // Verificar estrutura do primeiro livro
         String firstBookIsbn = response.jsonPath().getString("books[0].isbn");
         String firstBookTitle = response.jsonPath().getString("books[0].title");
 
@@ -48,24 +53,22 @@ public class BookApiTest {
     }
 
     @Test
+    @Story("Adicionar livro ao usuário")
+    @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Deve adicionar livro ao usuário autorizado")
     void deveAdicionarLivroAoUsuarioAutorizado() {
-        // Setup: criar usuário e obter token
         UserCredentials credentials = new UserCredentials(DataFactory.username(), DataFactory.password());
         String userId = userService.createUser(credentials);
         String token = userService.generateToken(credentials);
 
-        // Obter um livro disponível
         Response booksResponse = bookService.listBooks();
         List<String> availableIsbns = booksResponse.jsonPath().getList("books.isbn");
         assertTrue(availableIsbns.size() >= 1, "Deve haver pelo menos um livro disponível");
 
         List<String> selectedBook = Arrays.asList(availableIsbns.get(0));
 
-        // Test: adicionar livro
         Response addResponse = bookService.addBooksToUser(userId, selectedBook, token);
 
-        // Validações
         assertEquals(201, addResponse.statusCode(), "Adição deve retornar status 201");
 
         List<Object> addedBooks = addResponse.jsonPath().getList("books");
@@ -74,14 +77,14 @@ public class BookApiTest {
     }
 
     @Test
+    @Story("Adicionar múltiplos livros")
+    @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Deve adicionar múltiplos livros ao usuário")
     void deveAdicionarMultiplosLivrosAoUsuario() {
-        // Setup
         UserCredentials credentials = new UserCredentials(DataFactory.username(), DataFactory.password());
         String userId = userService.createUser(credentials);
         String token = userService.generateToken(credentials);
 
-        // Obter livros disponíveis
         Response booksResponse = bookService.listBooks();
         List<String> availableIsbns = booksResponse.jsonPath().getList("books.isbn");
         assertTrue(availableIsbns.size() >= 2, "Deve haver pelo menos dois livros para o teste");
@@ -91,40 +94,35 @@ public class BookApiTest {
                 availableIsbns.get(1)
         );
 
-        // Test
         Response addResponse = bookService.addBooksToUser(userId, selectedBooks, token);
 
-        // Validações
         assertEquals(201, addResponse.statusCode(), "Deve permitir adicionar múltiplos livros");
 
         List<Object> addedBooks = addResponse.jsonPath().getList("books");
         assertEquals(2, addedBooks.size(), "Deve adicionar exatamente 2 livros");
 
-        // Verificar se os ISBNs corretos foram adicionados
         List<String> addedIsbns = addResponse.jsonPath().getList("books.isbn");
         assertTrue(addedIsbns.containsAll(selectedBooks),
                 "Livros adicionados devem corresponder aos selecionados");
     }
 
     @Test
+    @Story("Adicionar livro com token inválido")
+    @Severity(SeverityLevel.BLOCKER)
     @DisplayName("Não deve adicionar livros com token inválido")
     void naoDeveAdicionarLivrosComTokenInvalido() {
-        // Setup
         UserCredentials credentials = new UserCredentials(DataFactory.username(), DataFactory.password());
         String userId = userService.createUser(credentials);
         String tokenInvalido = "token_invalido_123";
 
-        // Obter um livro disponível
         Response booksResponse = bookService.listBooks();
         List<String> availableIsbns = booksResponse.jsonPath().getList("books.isbn");
 
         if (!availableIsbns.isEmpty()) {
             List<String> selectedBook = Arrays.asList(availableIsbns.get(0));
 
-            // Test: tentar adicionar com token inválido
             Response addResponse = bookService.addBooksToUser(userId, selectedBook, tokenInvalido);
 
-            // Validação: deve falhar
             assertNotEquals(201, addResponse.statusCode(),
                     "Não deve permitir adicionar livros com token inválido");
             assertTrue(addResponse.statusCode() >= 400,
