@@ -39,23 +39,6 @@ jobs:
       - name: Build e execução de testes
         run: mvn clean verify
 
-
-      - name: Preparar relatório para GitHub Pages
-        run: |
-          mkdir -p public
-          cp target/extent-report.html public/index.html
-
-
-      - name: Publicar relatório no GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          publish_branch: gh-pages
-          user_name: "GitHub Actions"
-          user_email: "actions@github.com"
-
-
       - name: Salvar relatório como artifact
         uses: actions/upload-artifact@v4
         with:
