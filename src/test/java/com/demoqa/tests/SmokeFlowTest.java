@@ -59,7 +59,7 @@ public class SmokeFlowTest {
         // Verificar autorização
         test.info("Verificando se o usuário está autorizado");
         assertTrue(userService.isAuthorized(userCredentials), "Usuário deveria estar autorizado");
-        test.pass("Usuário autorizado com sucesso");
+        test.pass("Usuário" + userId + " autorizado com sucesso");
 
         // Listar livros disponíveis
         test.info("Listando livros disponíveis");
