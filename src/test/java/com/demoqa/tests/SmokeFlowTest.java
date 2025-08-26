@@ -12,32 +12,17 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.demoqa.TestSuite;
 
 @DisplayName("Fluxo completo: criar usuário, autorizar, alugar e listar livros")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SmokeFlowTest {
 
-    private static ExtentReports extent;
-    private ExtentTest test;
-
     private UserService userService;
     private BookService bookService;
     private UserCredentials userCredentials;
-
-    @BeforeAll
-    static void setupReport() {
-        ExtentSparkReporter spark = new ExtentSparkReporter("target/extent-report.html");
-        extent = new ExtentReports();
-        extent.attachReporter(spark);
-    }
-
-    @AfterAll
-    static void tearDownReport() {
-        extent.flush(); // Gera o relatório final
-    }
+    private ExtentTest test;
 
     @BeforeEach
     void setUp() {
@@ -46,10 +31,18 @@ public class SmokeFlowTest {
         userCredentials = new UserCredentials(DataFactory.username(), DataFactory.password());
     }
 
+    @AfterAll
+    static void tearDown() {
+        TestSuite.flushReport();
+    }
+
     @Test
     @Order(1)
     void deveCriarAutorizarAlugarEListar() {
-        test = extent.createTest("Smoke Flow Test", "Fluxo completo: criar usuário, autorizar, alugar e listar livros");
+        test = TestSuite.extent.createTest(
+                "Smoke Flow Test",
+                "Fluxo completo: criar usuário, autorizar, alugar e listar livros"
+        );
 
         // Criar usuário
         test.info("Criando usuário");
