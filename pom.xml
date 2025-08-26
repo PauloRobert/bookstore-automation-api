@@ -83,6 +83,12 @@
             <artifactId>javafaker</artifactId>
             <version>${faker.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.8</version> <!-- última estável em 2025 -->
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -106,11 +112,18 @@
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Suite.java</include>
+                        <useSystemClassLoader>true</useSystemClassLoader>
+                        <argLine>-Dallure.results.directory=target/allure-results</argLine>
                     </includes>
                     <systemPropertyVariables>
                         <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
                     </systemPropertyVariables>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.12.0</version>
             </plugin>
         </plugins>
     </build>
