@@ -1,0 +1,63 @@
+name: CI - Bookstore API (Java + ExtentReports)
+
+# Gatilhos
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: "0 * * * *" # Executa de hora em hora
+
+jobs:
+  build-e-testes:
+    name: Build e Execução de Testes
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Clonar código
+        uses: actions/checkout@v3
+
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+
+      - name: Cache dependências Maven
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+
+      - name: Build e execução de testes
+        run: mvn clean verify
+
+
+      - name: Preparar relatório para GitHub Pages
+        run: |
+          mkdir -p public
+          cp target/extent-report.html public/index.html
+
+
+      - name: Publicar relatório no GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+          user_name: "GitHub Actions"
+          user_email: "actions@github.com"
+
+
+      - name: Salvar relatório como artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: relatório-extentreports
+          path: target/extent-report.html

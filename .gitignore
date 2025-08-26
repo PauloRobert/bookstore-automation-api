@@ -17,5 +17,5 @@
 
 allure-results/
 allure-report/
-
+.allure/
 /test-output/
