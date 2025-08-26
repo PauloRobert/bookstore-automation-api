@@ -19,10 +19,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 
-        <!-- 🔄 Todas as versões unificadas -->
         <junit.jupiter.version>5.11.3</junit.jupiter.version>
         <junit.platform.version>1.11.3</junit.platform.version>
-
         <restassured.version>5.5.6</restassured.version>
         <jackson.version>2.19.2</jackson.version>
         <faker.version>1.0.2</faker.version>
@@ -31,22 +29,19 @@
     </properties>
 
     <dependencies>
-        <!-- ✅ JUnit 5 unificado -->
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
             <version>${junit.platform.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!-- 🔍 Necessário para rodar no IntelliJ / Maven -->
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
@@ -54,7 +49,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- 📊 Allure -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-junit5</artifactId>
@@ -62,7 +56,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- 🌐 RestAssured -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -70,30 +63,31 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- 🔄 Jackson para JSON -->
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
 
-        <!-- 🎲 Faker para dados fake -->
+
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>${faker.version}</version>
         </dependency>
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.8</version> <!-- última estável em 2025 -->
+            <version>1.5.8</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- 🔨 Compiler -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -103,7 +97,6 @@
                 </configuration>
             </plugin>
 
-            <!-- 🚀 Surefire para rodar JUnit 5 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -112,18 +105,31 @@
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Suite.java</include>
-                        <useSystemClassLoader>true</useSystemClassLoader>
-                        <argLine>-Dallure.results.directory=target/allure-results</argLine>
                     </includes>
                     <systemPropertyVariables>
                         <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
                 <version>2.12.0</version>
+                <configuration>
+                    <reportVersion>${allure.version}</reportVersion>
+                    <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
+                    <reportDirectory>${project.build.directory}/allure-report</reportDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>allure-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
