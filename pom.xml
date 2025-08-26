@@ -25,7 +25,7 @@
         <jackson.version>2.19.2</jackson.version>
         <faker.version>1.0.2</faker.version>
         <surefire.version>3.5.3</surefire.version>
-        <extentreports.version>5.0.9</extentreports.version>
+        <extentreports.version>5.1.2</extentreports.version>
     </properties>
 
     <dependencies>
@@ -50,7 +50,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ExtentReports -->
         <dependency>
             <groupId>com.aventstack</groupId>
             <artifactId>extentreports</artifactId>
