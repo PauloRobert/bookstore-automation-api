@@ -3,6 +3,7 @@ package com.demoqa.tests;
 import com.demoqa.models.UserCredentials;
 import com.demoqa.services.UserService;
 import com.demoqa.utils.DataFactory;
+import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Epic("Bookstore API")
+@Feature("User Management")
+@Owner("Stark")
 @DisplayName("User API Tests - Testes específicos da API de usuário")
 public class UserApiTest {
 
@@ -21,6 +25,8 @@ public class UserApiTest {
     }
 
     @Test
+    @Story("Criação de usuário")
+    @Severity(SeverityLevel.BLOCKER)
     @DisplayName("Deve criar usuário com sucesso usando dados válidos")
     void deveCriarUsuarioComDadosValidos() {
         UserCredentials credentials = new UserCredentials(DataFactory.username(), DataFactory.password());
@@ -32,15 +38,15 @@ public class UserApiTest {
     }
 
     @Test
+    @Story("Geração de token")
+    @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Deve gerar token para usuário criado")
     void deveGerarTokenParaUsuarioCriado() {
         UserCredentials credentials = new UserCredentials(DataFactory.username(), DataFactory.password());
 
-        // Primeiro criar o usuário
         String userId = userService.createUser(credentials);
         assertNotNull(userId, "Usuário deve ser criado antes de gerar token");
 
-        // Depois gerar o token
         String token = userService.generateToken(credentials);
 
         assertNotNull(token, "Token deve ser gerado");
@@ -48,33 +54,32 @@ public class UserApiTest {
     }
 
     @Test
+    @Story("Autorização de usuário")
+    @Severity(SeverityLevel.CRITICAL)
     @DisplayName("Deve autorizar usuário com credenciais válidas")
     void deveAutorizarUsuarioComCredenciaisValidas() {
         UserCredentials credentials = new UserCredentials(DataFactory.username(), DataFactory.password());
 
-        // Setup: criar usuário e gerar token
         userService.createUser(credentials);
         userService.generateToken(credentials);
 
-        // Test: verificar autorização
         boolean autorizado = userService.isAuthorized(credentials);
 
         assertTrue(autorizado, "Usuário com credenciais válidas deve estar autorizado");
     }
 
     @Test
+    @Story("Consulta de dados do usuário")
+    @Severity(SeverityLevel.NORMAL)
     @DisplayName("Deve retornar dados do usuário com token válido")
     void deveRetornarDadosDoUsuarioComTokenValido() {
         UserCredentials credentials = new UserCredentials(DataFactory.username(), DataFactory.password());
 
-        // Setup
         String userId = userService.createUser(credentials);
         String token = userService.generateToken(credentials);
 
-        // Test
         Response response = userService.getUser(userId, token);
 
-        // Validações
         assertEquals(200, response.statusCode(), "Deve retornar status 200");
 
         String userIdFromResponse = response.jsonPath().getString("userId");
@@ -85,6 +90,8 @@ public class UserApiTest {
     }
 
     @Test
+    @Story("Autorização com falha")
+    @Severity(SeverityLevel.BLOCKER)
     @DisplayName("Não deve autorizar usuário com credenciais inválidas")
     void naoDeveAutorizarUsuarioComCredenciaisInvalidas() {
         UserCredentials credenciaisInvalidas = new UserCredentials("usuario_inexistente", "senha_errada");
