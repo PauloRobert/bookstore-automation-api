@@ -54,7 +54,7 @@ public class UserApiTest {
         assertNotNull(token, "Token deve ser gerado");
         assertFalse(token.trim().isEmpty(), "Token não deve estar vazio");
 
-        test.pass("Token gerado com sucesso: " + token);
+        test.pass("Token gerado com sucesso: " + " Psiiiu o token é secreto rs");
     }
 
     @Test
